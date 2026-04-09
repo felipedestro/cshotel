@@ -5,21 +5,21 @@ import {
   Get,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import type { User as UserType } from '../../generated/prisma/client';
 import { ParamId } from '../../shared/decorators/params-id.decorator';
+import { Roles } from '../../shared/decorators/roles.decorator';
+import { User } from '../../shared/decorators/user.decorator';
+import { AuthGuard } from '../../shared/guards/auth.guard';
+import { RoleGuard } from '../../shared/guards/role.guard';
+import { UserMatchGuard } from '../../shared/guards/user-match.guard';
 import { CreateUserDTO } from './domain/dto/create-user.dto';
 import { UpdateUserDTO } from './domain/dto/update-user.dto';
 import { UserService } from './user.service';
-import { AuthGuard } from '../../shared/guards/auth.guard';
-import { User } from '../../shared/decorators/user.decorator';
-import type { User as UserType } from '../../generated/prisma/client';
-import { Roles } from '../../shared/decorators/roles.decorator';
-import { RoleGuard } from '../../shared/guards/role.guard';
-import { UserMatchGuard } from '../../shared/guards/user-match.guard';
 
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
