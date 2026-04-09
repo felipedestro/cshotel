@@ -1,15 +1,29 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ParamId } from '../../shared/decorators/params-id.decorator';
 import { CreateUserDTO } from './domain/dto/create-user.dto';
 import { UpdateUserDTO } from './domain/dto/update-user.dto';
 import { UserService } from './user.service';
+import { AuthGuard } from '../../shared/guards/auth.guard';
+import { User } from '../../shared/decorators/user.decorator';
+import type { User as UserType } from '../../generated/prisma/client';
 
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  list() {
+  list(@User('email') user: UserType) {
+    console.log(user);
     return this.userService.list();
   }
 
